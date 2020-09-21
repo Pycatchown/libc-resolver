@@ -1,0 +1,2 @@
+class NoLibrariesFound(Exception):
+    pass
