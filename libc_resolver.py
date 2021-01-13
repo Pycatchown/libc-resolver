@@ -13,7 +13,6 @@ def libc_resolve(dict_sym_addr, choice=0):
     libs = re.findall(regex_lib_names, result, re.MULTILINE)
     if len(libs) > 1:
         log.warning("[libc-resolver]: %d libraries are compatible, default choice is %d" % (len(libs), choice + 1))
-    return (ELF(config.db_path + libs[choice] + ".so"))
-    
-if __name__ == "__main__":
-    libc_resolve({"_IO_2_1_stdin_": 0x7fa30311a8c0})
+    libc = ELF(config.db_path + libs[choice] + ".so")
+    libc.address = list(dict_sym_addr.values())[0] - libc.symbols[list(dict_sym_addr.keys())[0]]
+    return (libc)
